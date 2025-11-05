@@ -43,7 +43,8 @@ pipeline {
         DEV_APP_NAME              = "springboot-app-dev"
         DEV_HOST_PORT             = "8081"
         PROD_APP_NAME             = "springboot-app-prod"
-        PROD_HOST_PORT            = "8080"
+        // [แก้ไข] เปลี่ยนพอร์ต Host ของ PRODUCTION เพื่อไม่ชน Jenkins (8080) -> ใช้ 18080 แทน
+        PROD_HOST_PORT            = "18080"
     }
 
     parameters {
@@ -176,6 +177,7 @@ pipeline {
                         docker pull ${DOCKER_REPO}:${env.IMAGE_TAG}
                         docker stop ${PROD_APP_NAME} || true
                         docker rm ${PROD_APP_NAME} || true
+                        // [แก้ไข] ใช้พอร์ต Host ${PROD_HOST_PORT} (ไม่ชน Jenkins 8080)
                         docker run -d --name ${PROD_APP_NAME} -p ${PROD_HOST_PORT}:8080 ${DOCKER_REPO}:${env.IMAGE_TAG}
                         docker ps --filter name=${PROD_APP_NAME} --format "table {{.Names}}\\t{{.Image}}\\t{{.Status}}"
                         """
